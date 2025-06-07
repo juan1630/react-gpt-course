@@ -24,7 +24,7 @@ export const ImageGenerationUseCase = async (
     });
 
     const fileName = await downloadImageAsPng(response!.data![0]!.url!);
-    const url = `${process.env.SERVER_URL}/gpt/image-generation${fileName}`;
+    const url = `${process.env.SERVER_URL}/gpt/image-generation/${fileName}`;
     return {
       // TODO: Retornar la imagen con el https:
       url,
