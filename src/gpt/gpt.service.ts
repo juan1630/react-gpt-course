@@ -8,7 +8,9 @@ import {
   prosConsDiscusserStreamUseCase,
   translateUseCase,
   TextToAudioUseCase,
-  AudioToTextUseCase
+  AudioToTextUseCase,
+  ImageGenerationUseCase,
+  imageVariationUseCase,
 } from './use-cases';
 import {
   AudioToTextDto,
@@ -16,6 +18,8 @@ import {
   ProsConsDiscusserDto,
   TextToAudioDto,
   TranslateDto,
+  ImageGenerationDto,
+  ImageGenerationVariationDto,
 } from './dtos';
 import OpenAI from 'openai';
 
@@ -52,13 +56,32 @@ export class GptService {
       '../../generated/audios/',
       `${fileId}.mp3`,
     );
-    
+
     const wasFound = fs.existsSync(filePath);
     if (!wasFound) throw new NotFoundException('File was not found');
     return filePath;
   }
 
-  async audioToText( audioFile: Express.Multer.File, prompt:AudioToTextDto  ){
-    return await AudioToTextUseCase( this.openia ,{audioFile, prompt:prompt.prompt })
+  async audioToText(audioFile: Express.Multer.File, prompt: AudioToTextDto) {
+    return await AudioToTextUseCase(this.openia, {
+      audioFile,
+      prompt: prompt.prompt,
+    });
+  }
+
+  async imageGeneration(imageGenerationDto: ImageGenerationDto) {
+    return await ImageGenerationUseCase(this.openia, { ...imageGenerationDto });
+  }
+
+   imageGenerationFile(fileName: string) {
+    
+    const imagePath = path.resolve('./', './generated/images/', fileName)
+  
+    const found = fs.existsSync(imagePath);
+    if (!found) throw new NotFoundException('File not found');
+    return imagePath
+  }
+  async imageGenerationVariation ({ baseImage }: ImageGenerationVariationDto) {
+    return imageVariationUseCase(this.openia, {baseImage  })
   }
 }

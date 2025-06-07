@@ -15,8 +15,10 @@ export class AudioFileValidationPipe implements PipeTransform {
       'audio/aac',
       'audio/ogg',
       'audio/webm',
+      'audio/x-m4a'
     ];
  
+    console.log(file.mimetype)
     if (!allowedMimeTypes.includes(file.mimetype)) {
       throw new BadRequestException(
         `Unsupported audio format: ${file.mimetype}`,
