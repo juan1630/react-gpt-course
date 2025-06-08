@@ -19,7 +19,7 @@ export const ImageGenerationUseCase = async (
       model: 'dall-e-2',
       n: 1,
       size: '1024x1024',
-      quality: 'standard',
+      // quality: 'standard',
       response_format: 'url',
     });
 
@@ -45,7 +45,7 @@ export const ImageGenerationUseCase = async (
     n: 1,
     size: '1024x1024',
     response_format: 'url',
-    quality:'standard'
+    // quality:'standard'
   });
 
   const fileName = await downloadImageAsPng(response!.data![0]!.url!);
