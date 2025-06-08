@@ -45,6 +45,7 @@ export const ImageGenerationUseCase = async (
     n: 1,
     size: '1024x1024',
     response_format: 'url',
+    quality:'standard'
   });
 
   const fileName = await downloadImageAsPng(response!.data![0]!.url!);
