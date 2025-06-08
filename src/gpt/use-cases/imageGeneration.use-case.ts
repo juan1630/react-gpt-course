@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 
 import { downloadBase64ImageAsPng, downloadImageAsPng } from 'helpers';
-import openai from 'openai';
+import openai, { toFile } from 'openai';
 
 interface Options {
   prompt: string;
@@ -16,7 +16,7 @@ export const ImageGenerationUseCase = async (
   if (!originalImage || !maskImage) {
     const response = await openAi.images.generate({
       prompt,
-      model: 'dall-e-3',
+      model: 'dall-e-2',
       n: 1,
       size: '1024x1024',
       quality: 'standard',
@@ -26,7 +26,6 @@ export const ImageGenerationUseCase = async (
     const fileName = await downloadImageAsPng(response!.data![0]!.url!);
     const url = `${process.env.SERVER_URL}/gpt/image-generation/${fileName}`;
     return {
-      // TODO: Retornar la imagen con el https:
       url,
       openiaUrl: response.data![0]!.url,
       revised_prompt: response!.data![0].revised_prompt,
@@ -39,10 +38,10 @@ export const ImageGenerationUseCase = async (
   const maskImagePath = await downloadBase64ImageAsPng(maskImage, true);
 
   const response = await openAi.images.edit({
-    model: 'dall-e-3',
+    model: 'dall-e-2',
     prompt,
-    image: fs.createReadStream(pngImagePath!),
-    mask: fs.createReadStream(maskImagePath!) || '',
+    image:await toFile(fs.createReadStream(pngImagePath!), null , { type: 'image/png' }),
+    mask:await toFile(fs.createReadStream(maskImagePath!), null, { type: 'image/png' }) ,
     n: 1,
     size: '1024x1024',
     response_format: 'url',
