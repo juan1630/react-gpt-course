@@ -34,26 +34,34 @@ export const ImageGenerationUseCase = async (
 
   //   Es una url
   // maskImage=Base64;kjrerkberhbher
-  const pngImagePath = await downloadImageAsPng(originalImage, true);
-  const maskImagePath = await downloadBase64ImageAsPng(maskImage, true);
 
-  const response = await openAi.images.edit({
-    model: 'dall-e-2',
-    prompt,
-    image:await toFile(fs.createReadStream(pngImagePath!), null , { type: 'image/png' }),
-    mask:await toFile(fs.createReadStream(maskImagePath!), null, { type: 'image/png' }) ,
-    n: 1,
-    size: '1024x1024',
-    response_format: 'url',
-    // quality:'standard'
-  });
+  try {
+    const pngImagePath = await downloadImageAsPng(originalImage, true);
+    const maskImagePath = await downloadBase64ImageAsPng(maskImage, true);
 
-  const fileName = await downloadImageAsPng(response!.data![0]!.url!);
-  const url = `${process.env.SERVER_URL}/gpt/image-generation/${fileName}`;
+    const response = await openAi.images.edit({
+      model: 'dall-e-2',
+      prompt,
+      image: await toFile(fs.createReadStream(pngImagePath!), null, {
+        type: 'image/png',
+      }),
+      mask: await toFile(fs.createReadStream(maskImagePath!), null, {
+        type: 'image/png',
+      }),
+      n: 1,
+      size: '1024x1024',
+      response_format: 'url',
+    });
 
-  return {
-    url,
-    openiaUrl: response.data![0]!.url,
-    revised_prompt: response!.data![0].revised_prompt,
-  };
+    const fileName = await downloadImageAsPng(response!.data![0]!.url!);
+    const url = `${process.env.SERVER_URL}/gpt/image-generation/${fileName}`;
+
+    return {
+      url,
+      openiaUrl: response.data![0]!.url,
+      revised_prompt: response!.data![0].revised_prompt,
+    };
+  } catch (error) {
+    console.error(error);
+  }
 };
