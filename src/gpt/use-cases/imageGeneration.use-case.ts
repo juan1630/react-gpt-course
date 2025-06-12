@@ -23,6 +23,8 @@ export const ImageGenerationUseCase = async (
       response_format: 'url',
     });
 
+    console.log(response.data)
+
     const fileName = await downloadImageAsPng(response!.data![0]!.url!);
     const url = `${process.env.SERVER_URL}/gpt/image-generation/${fileName}`;
     return {
