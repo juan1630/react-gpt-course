@@ -29,8 +29,8 @@ export const orthographyCheck = async (openai: Openia, options: Options) => {
       },
       { role: 'user', content: prompt },
     ],
-    model: 'gpt-3.5-turbo',
-    temperature: 0.3,
+    model: 'gpt-6.2-astra',
+    temperature: 1,
     max_completion_tokens: 150,
     response_format: {type : 'json_object' }
   });
